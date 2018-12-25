@@ -1,6 +1,6 @@
 package com.tranfode.domain;
 
-public class GetBookTreeRequest {
+public class GetBookTreeRequest  extends AbstractRequest{
 	String bookname;
 	String classificationname;
 

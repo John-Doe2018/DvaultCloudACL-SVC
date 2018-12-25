@@ -137,8 +137,8 @@ public class UpdateMasterJson {
 			JSONObject obj = new JSONObject();
 			FormatterUtil formatterUtil =new FormatterUtil();
 			
-			//String formattedName=formatterUtil.doFormat(bookObject.getName(), bookObject.getGroupId());
-			String formattedName=formatterUtil.doFormat(bookObject.getName(), "G001");
+			String formattedName=formatterUtil.doFormat(bookObject.getName(), bookObject.getGroupId());
+			//String formattedName=formatterUtil.doFormat(bookObject.getName(), "G001");
 			obj.put("Name", formattedName);
 			obj.put("Classification", bookObject.getClassification());
 			obj.put("Path", xmlFilePath);

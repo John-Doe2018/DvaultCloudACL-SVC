@@ -7,11 +7,13 @@ import javax.ws.rs.Produces;
 import com.tranfode.Constants.CloudFileConstants;
 import com.tranfode.auth.FileItAuthentication;
 import com.tranfode.auth.GetOrValidateUser;
+import com.tranfode.domain.CustomHeader;
 import com.tranfode.domain.LoginRequest;
 import com.tranfode.domain.LoginResponse;
 import com.tranfode.domain.LogoutRequest;
 import com.tranfode.domain.SignupRequest;
 import com.tranfode.domain.SignupResponse;
+import com.tranfode.domain.User;
 import com.tranfode.processor.ProcessUserDetails;
 import com.tranfode.util.FileItException;
 import com.tranfode.util.UserUtil;
@@ -33,6 +35,12 @@ public class LoginAuthenticationService {
 		FileItAuthentication.checkCredentials(userName, password);
 		UserUtil userUtil = new UserUtil();
 		userUtil.updateUserLoginDetails(userName, CloudFileConstants.ACTIVE);
+		CustomHeader customHeader=new CustomHeader();
+		User user=userUtil.getUserDetails(userName);
+		customHeader.setUserName(userName);
+		customHeader.setRole(user.getRole());
+		customHeader.setGroup(user.getGroup());
+		loginResponse.setCustomHeader(customHeader);
 		loginResponse.setSuccessMsg("Login Successful");
 		return loginResponse;
 	}

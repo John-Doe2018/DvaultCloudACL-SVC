@@ -14,11 +14,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.ResponseBuilder;
@@ -64,6 +66,7 @@ import com.tranfode.domain.DeleteBookRequest;
 import com.tranfode.domain.DeleteFileRequest;
 import com.tranfode.domain.DownloadFileRequest;
 import com.tranfode.domain.FileItContext;
+import com.tranfode.domain.GetBookClassificationRequest;
 import com.tranfode.domain.GetBookTreeRequest;
 import com.tranfode.domain.GetImageRequest;
 import com.tranfode.domain.SearchBookRequest;
@@ -87,6 +90,9 @@ import com.tranfode.util.FileUtil;
 import com.tranfode.util.FormatterUtil;
 
 public class BinderService {
+	
+	@Context
+	private HttpServletRequest request;
 
 	/**
 	 * @param createBinderRequest
@@ -501,8 +507,9 @@ public class BinderService {
 	 */
 	@POST
 	@Path("classifiedData")
-	public JSONObject getBookClassification() throws Exception {
-		String groupId="G001";
+	public JSONObject getBookClassification(GetBookClassificationRequest getBookClassificationRequest) throws Exception {
+		String groupId=getBookClassificationRequest.getCustomHeader().getGroup();
+		//String groupId="G001";
 		JSONObject jsonObject=(JSONObject) FileItContext.get(BinderConstants.CLASSIFIED_BOOK_NAMES);
 		Set<String> classifiedSet = jsonObject.keySet();
 		JSONObject finalObject=new JSONObject();

@@ -1,6 +1,6 @@
 package com.tranfode.domain;
 
-public class BookPageDetailsRequest {
+public class BookPageDetailsRequest extends AbstractRequest {
 	String bookName;
 	String fileName;
 	public String getBookName() {

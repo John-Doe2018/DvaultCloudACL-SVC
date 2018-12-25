@@ -1,5 +1,5 @@
 package com.tranfode.domain;
 
-public class UpdateBookRequest {
+public class UpdateBookRequest  extends AbstractRequest{
 
 }

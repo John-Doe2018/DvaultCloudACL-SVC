@@ -1,6 +1,6 @@
 package com.tranfode.domain;
 
-public class BookRequests {
+public class BookRequests  extends AbstractRequest{
 	String id;
 	String name;
 	String path;

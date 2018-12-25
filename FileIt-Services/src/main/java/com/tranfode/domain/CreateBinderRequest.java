@@ -1,6 +1,6 @@
 package com.tranfode.domain;
 
-public class CreateBinderRequest {
+public class CreateBinderRequest  extends AbstractRequest{
 
 	String htmlContent; 
 

@@ -79,8 +79,8 @@ public class TransformationProcessor {
 			Attr id = document.createAttribute("id");
 			id.setValue("topicref");
 			Attr groupId = document.createAttribute("groupId");
-			//groupId.setValue(binderlist.getGroupId());
-			groupId.setValue("G001");
+			groupId.setValue(binderlist.getGroupId());
+			//groupId.setValue("G001");
 			Attr classification = document.createAttribute("classification");
 			classification.setValue(binderlist.getClassification());
 			topicref.setAttributeNode(attr);

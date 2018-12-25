@@ -1,6 +1,6 @@
 package com.tranfode.domain;
 
-public class DeleteBookRequest {
+public class DeleteBookRequest  extends AbstractRequest {
 	String bookName;
 
 	String classificationName;

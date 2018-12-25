@@ -2,7 +2,7 @@ package com.tranfode.domain;
 
 import java.util.List;
 
-public class AddFileRequest {
+public class AddFileRequest  extends AbstractRequest{
 	String bookName;
 	
 	String classifcationName;

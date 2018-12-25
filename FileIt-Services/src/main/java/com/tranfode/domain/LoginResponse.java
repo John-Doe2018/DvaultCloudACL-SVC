@@ -12,4 +12,5 @@ public class LoginResponse extends Response {
 		this.successMsg = successMsg;
 	}
 
+	
 }

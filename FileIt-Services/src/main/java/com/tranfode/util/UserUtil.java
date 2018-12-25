@@ -131,18 +131,8 @@ public class UserUtil {
 		Unmarshaller un;
 		Users userList = null;
 		try {
-			InputStream oInputStream = cloudOperationUtil.getFIleInputStream(userFilePath);
-			JAXBContext context = JAXBContext.newInstance(Users.class);
-			un = context.createUnmarshaller();
-			userList = (Users) un.unmarshal(new InputStreamReader(oInputStream));
-
-			for (User user : userList.getUsers()) {
-				if (userName.equals(user.getUserName())) {
-
-					role = user.getRole();
-				}
-			}
-
+			User user=getUserDetails(userName);
+			role=user.getRole();
 			String aclFilePath = "Security/ACLData.JSON";
 			InputStream oInputStream1 = cloudOperationUtil.getFIleInputStream(aclFilePath);
 			
@@ -167,9 +157,6 @@ public class UserUtil {
 					break;
 				}
 			}
-		} catch (JAXBException e) {
-			// TODO Auto-generated catch block
-			throw new FileItException(e.getMessage());
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -178,5 +165,30 @@ public class UserUtil {
 	}
 	
 	
-	
+	public User getUserDetails(String userName)
+	{
+		User user=null;
+		CloudFilesOperationUtil cloudOperationUtil = new CloudFilesOperationUtil();
+		String userFilePath = "Security/userDetailsRepo.xml";
+		Unmarshaller un;
+		try {
+			InputStream oInputStream = cloudOperationUtil.getFIleInputStream(userFilePath);
+			JAXBContext context = JAXBContext.newInstance(Users.class);
+			un = context.createUnmarshaller();
+			Users userList = (Users) un.unmarshal(new InputStreamReader(oInputStream));
+
+			for (User userTemp : userList.getUsers()) {
+				if (userName.equals(userTemp.getUserName())) {
+					user= userTemp;
+				}
+			}
+		} catch (FileItException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (JAXBException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return user;
+	}
 }

@@ -50,7 +50,7 @@ public class ProcessUserDetails {
 			Users users = (Users) unmarshaller.unmarshal(new InputStreamReader(oInputStream));
 			encryptedPasswd = encryptPassword(signupRequest.getPassword());
 			User userObj = new User(signupRequest.getFirstName(), signupRequest.getLastName(),
-					signupRequest.getUserName(), encryptedPasswd, signupRequest.getRole());
+					signupRequest.getUserName(), encryptedPasswd, signupRequest.getRole(),signupRequest.getGroup());
 
 			List<User> usersList = users.getUsers();
 			for (User user : usersList) {

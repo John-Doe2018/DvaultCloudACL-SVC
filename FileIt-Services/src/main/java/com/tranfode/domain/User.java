@@ -13,11 +13,12 @@ public class User {
 	public String userName;
 	public String password;
 	public String role;
-
+	public String group;
+	
 	public User() {
 	}
 
-	public User(String firstName, String lastName, String userName, String password, String role) {
+	public User(String firstName, String lastName, String userName, String password, String role, String group) {
 		// TODO Auto-generated constructor stub
 		super();
 		this.firstName = firstName;
@@ -25,12 +26,13 @@ public class User {
 		this.userName = userName;
 		this.password = password;
 		this.role = role;
+		this.group=group;
 	}
 
 	@Override
 	public String toString() {
 		return "User [firstName=" + firstName + ", lastName=" + lastName + ", userName=" + userName + ", password="
-				+ password + ", role=" + role + "]";
+				+ password + ", role=" + role +", group=" + group + "]";
 	}
 
 	public String getFirstName() {
@@ -71,6 +73,14 @@ public class User {
 
 	public void setRole(String role) {
 		this.role = role;
+	}
+
+	public String getGroup() {
+		return group;
+	}
+
+	public void setGroup(String group) {
+		this.group = group;
 	}
 
 }

@@ -1,6 +1,6 @@
 package com.tranfode.domain;
 
-public class LoginRequest {
+public class LoginRequest  extends AbstractRequest{
 
 	public String userName;
 	

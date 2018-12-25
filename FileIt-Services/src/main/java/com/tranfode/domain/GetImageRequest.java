@@ -2,7 +2,7 @@ package com.tranfode.domain;
 
 import java.util.List;
 
-public class GetImageRequest {
+public class GetImageRequest  extends AbstractRequest{
 	private String bookName;
 	private List<Integer> rangeList;
 	private String classification;

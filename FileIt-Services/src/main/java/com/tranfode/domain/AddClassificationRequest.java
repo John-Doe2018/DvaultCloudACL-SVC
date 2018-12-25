@@ -1,6 +1,6 @@
 package com.tranfode.domain;
 
-public class AddClassificationRequest {
+public class AddClassificationRequest extends AbstractRequest{
 	String classificationName;
 
 	public String getClassificationName() {

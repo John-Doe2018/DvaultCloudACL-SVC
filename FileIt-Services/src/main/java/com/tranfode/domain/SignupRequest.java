@@ -1,12 +1,13 @@
 package com.tranfode.domain;
 
-public class SignupRequest {
+public class SignupRequest extends AbstractRequest {
 
 	private String firstName;
 	private String lastName;
 	private String userName;
 	private String password;
 	private String role;
+	private String group;
 	
 	public String getFirstName() {
 		return firstName;
@@ -37,6 +38,12 @@ public class SignupRequest {
 	}
 	public void setRole(String role) {
 		this.role = role;
+	}
+	public String getGroup() {
+		return group;
+	}
+	public void setGroup(String group) {
+		this.group = group;
 	}
 	
 	

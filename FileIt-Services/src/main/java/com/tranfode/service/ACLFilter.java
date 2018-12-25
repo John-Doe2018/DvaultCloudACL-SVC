@@ -6,11 +6,13 @@ import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.container.ContainerRequestContext;
 import javax.ws.rs.container.ContainerRequestFilter;
 import javax.ws.rs.core.Context;
+import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.ext.Provider;
 
 import com.tranfode.Constants.ErrorCodeConstants;
+import com.tranfode.domain.AbstractRequest;
 import com.tranfode.domain.AuthorizationDetails;
 import com.tranfode.util.FileItException;
 import com.tranfode.util.UserUtil;
@@ -25,28 +27,30 @@ public class ACLFilter implements ContainerRequestFilter{
 	public void filter(ContainerRequestContext requestContext) throws IOException {
 		
 		//String user=requestContext.getHeaderString(HttpHeaders.USER_AGENT);
-		String user="admin";
+		//String user="admin";
+		AbstractRequest abstractRequest=(AbstractRequest) request;
+		String userName=abstractRequest.getCustomHeader().getUserName();
 		String reqURL=request.getRequestURI();
 		UserUtil userUtil=new UserUtil();
 		
 		try {
-			if(!userUtil.isOperationAllowed(user, reqURL)) {
-				Response response=setResponseForUnauthorizedAccess(requestContext, user);
+			if(!userUtil.isOperationAllowed(userName, reqURL)) {
+				Response response=setResponseForUnauthorizedAccess(requestContext, userName);
 				requestContext.abortWith(response);
 			}
 		} catch (FileItException e) {
-			Response response=setResponseForUnauthorizedAccess(requestContext, user);
+			Response response=setResponseForUnauthorizedAccess(requestContext, userName);
 			requestContext.abortWith(response);
 		}
 	}
 	
-    private Response setResponseForUnauthorizedAccess(ContainerRequestContext reqContext, String user) {
+    private Response setResponseForUnauthorizedAccess(ContainerRequestContext reqContext, String userName) {
     	AuthorizationDetails authorizationDetails=new AuthorizationDetails();
     	authorizationDetails.setCode(ErrorCodeConstants.ERR_CODE_0100);
 		authorizationDetails.setMessage("Access denied./nUser is not athorized for this oeration.");
 		
             Response response = Response.status(Response.Status.UNAUTHORIZED)
-            		.header("User", user)
+            		.header("User", userName)
             		.entity(authorizationDetails)
             		.type(MediaType.APPLICATION_JSON).build();
            

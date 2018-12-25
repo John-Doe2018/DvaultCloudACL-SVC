@@ -1,6 +1,6 @@
 package com.tranfode.domain;
 
-public class LogoutRequest {
+public class LogoutRequest  extends AbstractRequest{
 
 	public String userName;
 
