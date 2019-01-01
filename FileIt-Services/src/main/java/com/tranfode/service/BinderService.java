@@ -507,6 +507,8 @@ public class BinderService {
 	 */
 	@POST
 	@Path("classifiedData")
+	@Produces(MediaType.APPLICATION_JSON)
+	@Consumes(MediaType.APPLICATION_JSON)
 	public JSONObject getBookClassification(GetBookClassificationRequest getBookClassificationRequest) throws Exception {
 		String groupId=getBookClassificationRequest.getCustomHeader().getGroup();
 		//String groupId="G001";
