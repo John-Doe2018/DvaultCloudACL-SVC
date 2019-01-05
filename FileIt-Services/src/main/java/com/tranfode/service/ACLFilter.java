@@ -26,10 +26,10 @@ public class ACLFilter implements ContainerRequestFilter{
 	@Override
 	public void filter(ContainerRequestContext requestContext) throws IOException {
 		
-		//String user=requestContext.getHeaderString(HttpHeaders.USER_AGENT);
-		//String user="admin";
-		AbstractRequest abstractRequest=(AbstractRequest) request;
-		String userName=abstractRequest.getCustomHeader().getUserName();
+		String userName=requestContext.getHeaderString("UserName");
+	
+	//	AbstractRequest abstractRequest=(AbstractRequest) request;
+		//String userName=abstractRequest.getCustomHeader().getUserName();
 		String reqURL=request.getRequestURI();
 		UserUtil userUtil=new UserUtil();
 		

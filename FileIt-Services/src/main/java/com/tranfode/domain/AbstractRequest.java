@@ -11,5 +11,5 @@ public class AbstractRequest {
 	public void setCustomHeader(CustomHeader customHeader) {
 		this.customHeader = customHeader;
 	}
-	
+
 }

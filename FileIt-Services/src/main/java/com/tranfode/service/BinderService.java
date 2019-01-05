@@ -90,7 +90,7 @@ import com.tranfode.util.FileUtil;
 import com.tranfode.util.FormatterUtil;
 
 public class BinderService {
-	
+
 	@Context
 	private HttpServletRequest request;
 
@@ -101,6 +101,8 @@ public class BinderService {
 	 */
 	@POST
 	@Path("create")
+	@Produces(MediaType.APPLICATION_JSON)
+	@Consumes(MediaType.APPLICATION_JSON)
 	public CreateBinderResponse createBinder(CreateBinderRequest createBinderRequest) throws FileItException {
 		CreateBinderResponse createBinderResponse = new CreateBinderResponse();
 		try {
@@ -143,86 +145,81 @@ public class BinderService {
 		JSONObject pagedetaillsObj = new JSONObject();
 		detailsObj.put("pageCount", 0);
 		detailsObj.put("imageMapList", oImages);
-		
+
 		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
 		DocumentBuilder builder = factory.newDocumentBuilder();
-		
-		
-		String requiredXmlPath = "files/" + oGetImageRequest.getClassification() + "/" + oGetImageRequest.getBookName() + ".xml";
-		CloudFilesOperationUtil cloudFilesOperationUtil= new CloudFilesOperationUtil();
+
+		String requiredXmlPath = "files/" + oGetImageRequest.getClassification() + "/" + oGetImageRequest.getBookName()
+				+ ".xml";
+		CloudFilesOperationUtil cloudFilesOperationUtil = new CloudFilesOperationUtil();
 		InputStream xmlInputStream = cloudFilesOperationUtil.getFIleInputStream(requiredXmlPath);
 		Document doc = builder.parse(xmlInputStream);
-		NodeList elementList= doc.getElementsByTagName("topic");
-		List<String> listOfDoc=new ArrayList<String>();
-		for (int i=0; i<elementList.getLength();i++) {
-			listOfDoc.add(((Element)elementList.item(i)).getAttribute("path"));
+		NodeList elementList = doc.getElementsByTagName("topic");
+		List<String> listOfDoc = new ArrayList<String>();
+		for (int i = 0; i < elementList.getLength(); i++) {
+			listOfDoc.add(((Element) elementList.item(i)).getAttribute("path"));
 		}
-		
+
 		if (null != oFileItContext.get(oGetImageRequest.getBookName())) {
 			pagedetaillsObj = (JSONObject) oFileItContext.get(oGetImageRequest.getBookName());
 		} else {
 			pagedetaillsObj = ContentProcessor.getInstance().getBookPageInfo(listOfDoc, oGetImageRequest.getBookName());
 		}
-		
-		int firstPageNo=oGetImageRequest.getRangeList().get(0);
-		int secondPageNo=oGetImageRequest.getRangeList().get(1);
+
+		int firstPageNo = oGetImageRequest.getRangeList().get(0);
+		int secondPageNo = oGetImageRequest.getRangeList().get(1);
 		List<String> booklist = new ArrayList<>();
 		for (String docname : listOfDoc) {
-			if (firstPageNo>= ((List<Integer>) pagedetaillsObj.get(docname)).get(0)
-					&& firstPageNo<= ((List<Integer>) pagedetaillsObj.get(docname)).get(1)
-					&& secondPageNo>= ((List<Integer>) pagedetaillsObj.get(docname)).get(0)
-					&& secondPageNo<= ((List<Integer>) pagedetaillsObj.get(docname)).get(1) ) {
+			if (firstPageNo >= ((List<Integer>) pagedetaillsObj.get(docname)).get(0)
+					&& firstPageNo <= ((List<Integer>) pagedetaillsObj.get(docname)).get(1)
+					&& secondPageNo >= ((List<Integer>) pagedetaillsObj.get(docname)).get(0)
+					&& secondPageNo <= ((List<Integer>) pagedetaillsObj.get(docname)).get(1)) {
 				booklist.add(docname);
 				break;
-			}else if(firstPageNo>= ((List<Integer>) pagedetaillsObj.get(docname)).get(0)
-					&& firstPageNo<= ((List<Integer>) pagedetaillsObj.get(docname)).get(1)){
+			} else if (firstPageNo >= ((List<Integer>) pagedetaillsObj.get(docname)).get(0)
+					&& firstPageNo <= ((List<Integer>) pagedetaillsObj.get(docname)).get(1)) {
 				booklist.add(docname);
-			}else if(secondPageNo>= ((List<Integer>) pagedetaillsObj.get(docname)).get(0)
-					&& secondPageNo<= ((List<Integer>) pagedetaillsObj.get(docname)).get(1)) {
+			} else if (secondPageNo >= ((List<Integer>) pagedetaillsObj.get(docname)).get(0)
+					&& secondPageNo <= ((List<Integer>) pagedetaillsObj.get(docname)).get(1)) {
 				booklist.add(docname);
 			}
 		}
-	
-		if(booklist.size()==1) {
+
+		if (booklist.size() == 1) {
 			String extension = FilenameUtils.getExtension(booklist.get(0));
 			String fileName = FilenameUtils.getName(booklist.get(0));
-			int firstPageIndex=firstPageNo-((List<Integer>) pagedetaillsObj.get(booklist.get(0))).get(0)+1;
+			int firstPageIndex = firstPageNo - ((List<Integer>) pagedetaillsObj.get(booklist.get(0))).get(0) + 1;
 			fis = CloudStorageConfig.getInstance().getFile(CloudPropertiesReader.getInstance().getString("bucket.name"),
 					booklist.get(0));
 			detailsObj = ContentProcessor.getInstance().processContentImage(oGetImageRequest.getBookName(), fis,
 					oGetImageRequest.getClassification() + "/" + oGetImageRequest.getBookName() + "/Images/", extension,
 					fileName, Integer.valueOf(detailsObj.get("pageCount").toString()),
-					(List<String>) detailsObj.get("imageMapList"), firstPageIndex,
-					firstPageIndex+1);
-		}else if(booklist.size()>1) {
-			//fetching from forst doc
+					(List<String>) detailsObj.get("imageMapList"), firstPageIndex, firstPageIndex + 1);
+		} else if (booklist.size() > 1) {
+			// fetching from forst doc
 			String extension = FilenameUtils.getExtension(booklist.get(0));
 			String fileName = FilenameUtils.getName(booklist.get(0));
-			int firstPageIndex=firstPageNo-((List<Integer>) pagedetaillsObj.get(booklist.get(0))).get(0)+1;
+			int firstPageIndex = firstPageNo - ((List<Integer>) pagedetaillsObj.get(booklist.get(0))).get(0) + 1;
 			fis = CloudStorageConfig.getInstance().getFile(CloudPropertiesReader.getInstance().getString("bucket.name"),
 					booklist.get(0));
 			detailsObj = ContentProcessor.getInstance().processContentImage(oGetImageRequest.getBookName(), fis,
 					oGetImageRequest.getClassification() + "/" + oGetImageRequest.getBookName() + "/Images/", extension,
 					fileName, Integer.valueOf(detailsObj.get("pageCount").toString()),
-					(List<String>) detailsObj.get("imageMapList"), firstPageIndex,
-					null);
-			
-			
-			//fetching from second doc
+					(List<String>) detailsObj.get("imageMapList"), firstPageIndex, null);
+
+			// fetching from second doc
 			extension = FilenameUtils.getExtension(booklist.get(1));
 			fileName = FilenameUtils.getName(booklist.get(1));
-			int secondPageIndex=secondPageNo-((List<Integer>) pagedetaillsObj.get(booklist.get(1))).get(0)+1;
+			int secondPageIndex = secondPageNo - ((List<Integer>) pagedetaillsObj.get(booklist.get(1))).get(0) + 1;
 			fis = CloudStorageConfig.getInstance().getFile(CloudPropertiesReader.getInstance().getString("bucket.name"),
 					booklist.get(1));
 			detailsObj = ContentProcessor.getInstance().processContentImage(oGetImageRequest.getBookName(), fis,
 					oGetImageRequest.getClassification() + "/" + oGetImageRequest.getBookName() + "/Images/", extension,
 					fileName, Integer.valueOf(detailsObj.get("pageCount").toString()),
-					(List<String>) detailsObj.get("imageMapList"), null,
-					secondPageIndex);
-			
-			
+					(List<String>) detailsObj.get("imageMapList"), null, secondPageIndex);
+
 		}
-		
+
 		return (List<String>) detailsObj.get("imageMapList");
 	}
 
@@ -335,7 +332,8 @@ public class BinderService {
 	 */
 	@POST
 	@Path("delete")
-	@Produces("application/json")
+	@Produces(MediaType.APPLICATION_JSON)
+	@Consumes(MediaType.APPLICATION_JSON)
 	public JSONObject deleteBinder(DeleteBookRequest deleteBookRequest) throws Exception {
 		String bookName = deleteBookRequest.getBookName();
 		String classificationName = deleteBookRequest.getClassificationName();
@@ -351,7 +349,8 @@ public class BinderService {
 	 */
 	@POST
 	@Path("getBookTreeDetail")
-	@Produces("application/json")
+	@Produces(MediaType.APPLICATION_JSON)
+	@Consumes(MediaType.APPLICATION_JSON)
 	public JSONObject BookTreeDetail(GetBookTreeRequest oGetBookTreeRequest) throws Exception {
 		JSONObject document = BookTreeProcessor.getInstance().processBookXmltoDoc(oGetBookTreeRequest.getBookname(),
 				oGetBookTreeRequest.getClassificationname());
@@ -383,6 +382,8 @@ public class BinderService {
 	 */
 	@POST
 	@Path("searchBook")
+	@Produces(MediaType.APPLICATION_JSON)
+	@Consumes(MediaType.APPLICATION_JSON)
 	public SearchBookResponse searchBook(SearchBookRequest searchBookRequest) throws Exception {
 		SearchBookResponse bookResponse = new SearchBookResponse();
 		String bookName = searchBookRequest.getBookName();
@@ -425,6 +426,8 @@ public class BinderService {
 	 */
 	@POST
 	@Path("addFile")
+	@Produces(MediaType.APPLICATION_JSON)
+	@Consumes(MediaType.APPLICATION_JSON)
 	public JSONObject addFiles(AddFileRequest oAddFileRequest) throws Exception {
 		AddFileProcessor oAddFileProcessor = new AddFileProcessor();
 		oAddFileProcessor.updateXML(oAddFileRequest.getBookName(), oAddFileRequest.getClassifcationName(),
@@ -441,6 +444,8 @@ public class BinderService {
 	 */
 	@POST
 	@Path("deleteFile")
+	@Produces(MediaType.APPLICATION_JSON)
+	@Consumes(MediaType.APPLICATION_JSON)
 	public JSONObject deleteFile(DeleteFileRequest oDeleteFileRequest) throws FileItException {
 		CloudStorageConfig oCloudStorageConfig = new CloudStorageConfig().getInstance();
 		JSONObject oJsonObject = new JSONObject();
@@ -507,33 +512,36 @@ public class BinderService {
 	 */
 	@POST
 	@Path("classifiedData")
-	public JSONObject getBookClassification(GetBookClassificationRequest getBookClassificationRequest) throws Exception {
-		String groupId=getBookClassificationRequest.getCustomHeader().getGroup();
-		//String groupId="G001";
-		JSONObject jsonObject=(JSONObject) FileItContext.get(BinderConstants.CLASSIFIED_BOOK_NAMES);
+	@Produces(MediaType.APPLICATION_JSON)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public JSONObject getBookClassification(GetBookClassificationRequest getBookClassificationRequest)
+			throws Exception {
+		String groupId = getBookClassificationRequest.getCustomHeader().getGroup();
+		// String groupId="G001";
+		JSONObject jsonObject = (JSONObject) FileItContext.get(BinderConstants.CLASSIFIED_BOOK_NAMES);
 		Set<String> classifiedSet = jsonObject.keySet();
-		JSONObject finalObject=new JSONObject();
-		FormatterUtil formatterUtil=new FormatterUtil();
+		JSONObject finalObject = new JSONObject();
+		FormatterUtil formatterUtil = new FormatterUtil();
 		for (String key : classifiedSet) {
-			Object obj=jsonObject.get(key);
-			JSONArray finalJsonArray=new JSONArray();
-			
+			Object obj = jsonObject.get(key);
+			JSONArray finalJsonArray = new JSONArray();
+
 			try {
-				JSONArray jsonArray=(JSONArray) obj;
+				JSONArray jsonArray = (JSONArray) obj;
 				for (Object object : jsonArray) {
-					String value=formatterUtil.undoFormat((String)object, groupId);
-					if(null!=value) {
+					String value = formatterUtil.undoFormat((String) object, groupId);
+					if (null != value) {
 						finalJsonArray.add(value);
 					}
 				}
 			} catch (Exception e) {
-				String value=formatterUtil.undoFormat((String)obj, groupId);
-				if(null!=value) {
+				String value = formatterUtil.undoFormat((String) obj, groupId);
+				if (null != value) {
 					finalJsonArray.add(value);
 				}
 				e.printStackTrace();
 			}
-			if(finalJsonArray.size()>0) {
+			if (finalJsonArray.size() > 0) {
 				finalObject.put(key, finalJsonArray);
 			}
 		}
@@ -548,6 +556,8 @@ public class BinderService {
 	 */
 	@POST
 	@Path("addClassification")
+	@Produces(MediaType.APPLICATION_JSON)
+	@Consumes(MediaType.APPLICATION_JSON)
 	public AddClassificationResponse addBookClassification(AddClassificationRequest addClassificationRequest)
 			throws FileItException {
 		AddClassificationResponse addClassificationResponse = new AddClassificationResponse();
@@ -568,6 +578,7 @@ public class BinderService {
 	 */
 	@GET
 	@Path("getClassification")
+	@Produces(MediaType.APPLICATION_JSON)
 	public List<String> getClassifications() throws FileItException {
 		List<String> getClassifications = new ArrayList<String>();
 		try {
@@ -586,6 +597,8 @@ public class BinderService {
 	 */
 	@POST
 	@Path("tagBook")
+	@Produces(MediaType.APPLICATION_JSON)
+	@Consumes(MediaType.APPLICATION_JSON)
 	public BookMarkResponse bookMark(BookMarkRequest bookMarkRequest) throws FileItException {
 		BookMarkResponse bookMarkResponse = new BookMarkResponse();
 		String loggedInUser = bookMarkRequest.getUserName();
@@ -606,6 +619,8 @@ public class BinderService {
 	 */
 	@POST
 	@Path("getBookMarks")
+	@Produces(MediaType.APPLICATION_JSON)
+	@Consumes(MediaType.APPLICATION_JSON)
 	public BookMarkResponse getBookMarks(BookMarkRequest bookMarkRequest) throws FileItException {
 		BookMarkResponse bookMarkResponse = new BookMarkResponse();
 		String loggedInUser = bookMarkRequest.getUserName();
@@ -619,8 +634,7 @@ public class BinderService {
 		return bookMarkResponse;
 
 	}
-	
-	
+
 	/**
 	 * @param bookPageDetailsRequest
 	 * @return
@@ -628,6 +642,8 @@ public class BinderService {
 	 */
 	@POST
 	@Path("getBookPageDetails")
+	@Produces(MediaType.APPLICATION_JSON)
+	@Consumes(MediaType.APPLICATION_JSON)
 	public BookPageDetailsResponse getBookPageDetails(BookPageDetailsRequest bookPageDetailsRequest)
 			throws FileItException {
 		BookPageDetailsResponse bookPageDetailsResponse = new BookPageDetailsResponse();
