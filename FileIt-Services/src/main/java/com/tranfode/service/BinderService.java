@@ -111,6 +111,7 @@ public class BinderService {
 			String htmlContent = createBinderRequest.getHtmlContent();
 			TransformationProcessor transformationProcessor = new TransformationProcessor();
 			BinderList listOfBinderObj = transformationProcessor.createBinderList(htmlContent);
+			listOfBinderObj.setGroupId(createBinderRequest.getCustomHeader().getGroup());
 			transformationProcessor.processHtmlToBinderXml(listOfBinderObj);
 			UpdateMasterJson updateMasterJson = new UpdateMasterJson();
 			updateMasterJson.prepareMasterJson(listOfBinderObj);
@@ -535,7 +536,7 @@ public class BinderService {
 					}
 				}
 			} catch (Exception e) {
-				String value = formatterUtil.undoFormat((String) obj, groupId);
+				String value = formatterUtil.undoFormat(obj.toString(), groupId);
 				if (null != value) {
 					finalJsonArray.add(value);
 				}
