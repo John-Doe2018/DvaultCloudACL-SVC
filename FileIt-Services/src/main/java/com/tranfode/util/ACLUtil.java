@@ -1,5 +1,6 @@
 package com.tranfode.util;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -8,6 +9,8 @@ import java.util.ArrayList;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
+
+import com.tranfode.Constants.CloudFileConstants;
 
 public class ACLUtil {
  
@@ -48,5 +51,22 @@ public class ACLUtil {
 		JSONObject aclObject = (JSONObject) parser.parse(new InputStreamReader(oInputStream1));
 		groupObject= ((JSONObject)aclObject.get("Groups"));
 		return groupObject;
+	}
+
+	public void updateAccess(String role, ArrayList<String> accesslist) throws FileItException, IOException, ParseException {
+		
+		String aclFilePath = "Security/ACLData.JSON";
+		CloudFilesOperationUtil cloudOperationUtil = new CloudFilesOperationUtil();
+		InputStream oInputStream1 = cloudOperationUtil.getFIleInputStream(aclFilePath);
+		JSONParser parser = new JSONParser(); 
+		JSONObject aclObject = (JSONObject) parser.parse(new InputStreamReader(oInputStream1));
+		JSONObject roleActionMapObject= ((JSONObject)aclObject.get("RoleActionMap"));
+		//roleActionMapObject.remove(role);
+		roleActionMapObject.put(role, accesslist);
+		aclObject.put("RoleActionMap", roleActionMapObject);
+		InputStream is = new ByteArrayInputStream(aclObject.toJSONString().getBytes());
+		CloudFilesOperationUtil cloudFilesOperationUtil = new CloudFilesOperationUtil();
+		cloudFilesOperationUtil.fIleUploaded(aclFilePath, is,
+				CloudFileConstants.JSONFILETYPE);
 	}
 }

@@ -71,6 +71,7 @@ import com.tranfode.domain.GetBookTreeRequest;
 import com.tranfode.domain.GetImageRequest;
 import com.tranfode.domain.SearchBookRequest;
 import com.tranfode.domain.SearchBookResponse;
+import com.tranfode.domain.UpdateAccessRequest;
 import com.tranfode.processor.AddClassificationProcessor;
 import com.tranfode.processor.AddFileProcessor;
 import com.tranfode.processor.BookTreeProcessor;
@@ -695,6 +696,18 @@ public class BinderService {
 		JSONObject accessListObj=null;
 		ACLUtil aclUtil=new ACLUtil();
 		accessListObj = aclUtil.getAccessList(getAccessListRequest.getRole());
+		return accessListObj;
+	}
+	
+	@POST
+	@Path("updateAccess")
+	@Produces(MediaType.APPLICATION_JSON)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public JSONObject updateAccess(UpdateAccessRequest updateAccessRequest) throws FileItException, IOException, ParseException  {
+		JSONObject accessListObj=new JSONObject();
+		ACLUtil aclUtil=new ACLUtil();
+		aclUtil.updateAccess(updateAccessRequest.getRole(),updateAccessRequest.getAccesslist());
+		accessListObj.put("Success", "Access updated Successfully");
 		return accessListObj;
 	}
 }
