@@ -98,8 +98,8 @@ public class UserUtil {
 				userList.add(activeUser);
 				activeUsers.setActiveUserList(userList);
 			}
-			
-			
+
+
 			StringWriter sw = new StringWriter();
 			m.marshal(activeUsers, sw);
 			String xmlString = sw.toString();
@@ -113,10 +113,10 @@ public class UserUtil {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
-		
-		
-		
+
+
+
+
 
 	}
 
@@ -125,22 +125,20 @@ public class UserUtil {
 	public boolean isOperationAllowed(String userName, String resource) throws FileItException
 	{
 		boolean allowedFlag=false;
-		String role=null;
+		//String role=null;
 		CloudFilesOperationUtil cloudOperationUtil = new CloudFilesOperationUtil();
 		String userFilePath = "Security/userDetailsRepo.xml";
 		Unmarshaller un;
 		Users userList = null;
 		try {
-			User user=getUserDetails(userName);
-			role=user.getRole();
+
 			String aclFilePath = "Security/ACLData.JSON";
 			InputStream oInputStream1 = cloudOperationUtil.getFIleInputStream(aclFilePath);
-			
+
 			JSONParser parser = new JSONParser(); 
 			JSONObject aclObject = (JSONObject) parser.parse(new InputStreamReader(oInputStream1));
-			ArrayList<String> actionList=new ArrayList<>();
-			actionList=(ArrayList<String>) ((JSONObject)aclObject.get("RoleActionMap")).get(role);
-			//Need to change the logic to get the resource Id
+
+			//get resource Id 
 			String resourceId=null;
 			JSONObject resourceObject=(JSONObject)aclObject.get("Resources");
 			Set keySet=resourceObject.keySet();  
@@ -151,10 +149,19 @@ public class UserUtil {
 				}
 			}
 			String actionId=((JSONObject)aclObject.get("ResourceActionMap")).get(resourceId).toString();
-			for (String  action : actionList) {
-				if(action.equalsIgnoreCase(actionId)) {
-					allowedFlag=true;
-					break;
+			//check if action is default
+			if("AC000".equalsIgnoreCase(actionId)) {
+				allowedFlag=true;
+			}else {
+				User user=getUserDetails(userName);
+				String role=user.getRole();
+				ArrayList<String> actionList=new ArrayList<>();
+				actionList=(ArrayList<String>) ((JSONObject)aclObject.get("RoleActionMap")).get(role);
+				for (String  action : actionList) {
+					if("AC000".equalsIgnoreCase(actionId) || action.equalsIgnoreCase(actionId)) {
+						allowedFlag=true;
+						break;
+					}
 				}
 			}
 		} catch (Exception e) {
@@ -163,8 +170,8 @@ public class UserUtil {
 		}
 		return allowedFlag;
 	}
-	
-	
+
+
 	public User getUserDetails(String userName)
 	{
 		User user=null;

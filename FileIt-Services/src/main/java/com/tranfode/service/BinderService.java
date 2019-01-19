@@ -7,11 +7,10 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
@@ -39,6 +38,7 @@ import org.apache.cxf.jaxrs.ext.multipart.Attachment;
 import org.apache.cxf.jaxrs.ext.multipart.MultipartBody;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -48,7 +48,6 @@ import org.xml.sax.SAXException;
 
 import com.google.common.base.Predicates;
 import com.google.common.collect.Collections2;
-import com.google.gson.JsonArray;
 import com.tranfode.Constants.BinderConstants;
 import com.tranfode.Constants.CloudFileConstants;
 import com.tranfode.domain.AddClassificationRequest;
@@ -661,5 +660,22 @@ public class BinderService {
 			}
 		}
 		return bookPageDetailsResponse;
+	}
+	
+	
+	
+	
+	@GET
+	@Path("getAllRoles")
+	@Produces(MediaType.APPLICATION_JSON)
+	public JSONObject getAllRoles() throws FileItException, Exception {
+		JSONObject rolesObject=null;
+		String aclFilePath = "Security/ACLData.JSON";
+		CloudFilesOperationUtil cloudOperationUtil = new CloudFilesOperationUtil();
+		InputStream oInputStream1 = cloudOperationUtil.getFIleInputStream(aclFilePath);
+		JSONParser parser = new JSONParser(); 
+		JSONObject aclObject = (JSONObject) parser.parse(new InputStreamReader(oInputStream1));
+		rolesObject= ((JSONObject)aclObject.get("Roles"));
+		return rolesObject;
 	}
 }
