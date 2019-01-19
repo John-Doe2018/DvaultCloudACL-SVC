@@ -65,6 +65,7 @@ import com.tranfode.domain.DeleteBookRequest;
 import com.tranfode.domain.DeleteFileRequest;
 import com.tranfode.domain.DownloadFileRequest;
 import com.tranfode.domain.FileItContext;
+import com.tranfode.domain.GetAccessListRequest;
 import com.tranfode.domain.GetBookClassificationRequest;
 import com.tranfode.domain.GetBookTreeRequest;
 import com.tranfode.domain.GetImageRequest;
@@ -79,6 +80,7 @@ import com.tranfode.processor.LookupBookProcessor;
 import com.tranfode.processor.PrepareClassificationMap;
 import com.tranfode.processor.TransformationProcessor;
 import com.tranfode.processor.UpdateMasterJson;
+import com.tranfode.util.ACLUtil;
 import com.tranfode.util.BookMarkUtil;
 import com.tranfode.util.CloudFilesOperationUtil;
 import com.tranfode.util.CloudPropertiesReader;
@@ -670,12 +672,29 @@ public class BinderService {
 	@Produces(MediaType.APPLICATION_JSON)
 	public JSONObject getAllRoles() throws FileItException, Exception {
 		JSONObject rolesObject=null;
-		String aclFilePath = "Security/ACLData.JSON";
-		CloudFilesOperationUtil cloudOperationUtil = new CloudFilesOperationUtil();
-		InputStream oInputStream1 = cloudOperationUtil.getFIleInputStream(aclFilePath);
-		JSONParser parser = new JSONParser(); 
-		JSONObject aclObject = (JSONObject) parser.parse(new InputStreamReader(oInputStream1));
-		rolesObject= ((JSONObject)aclObject.get("Roles"));
+		ACLUtil aclUtil=new ACLUtil();
+		rolesObject=aclUtil.getAllRoles();
 		return rolesObject;
+	}
+	
+	@GET
+	@Path("getAllGroups")
+	@Produces(MediaType.APPLICATION_JSON)
+	public JSONObject getAllGroups() throws FileItException, Exception {
+		JSONObject groupsObject=null;
+		ACLUtil aclUtil=new ACLUtil();
+		groupsObject=aclUtil.getAllGroups();
+		return groupsObject;
+	}
+	
+	@POST
+	@Path("getAccessList")
+	@Produces(MediaType.APPLICATION_JSON)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public JSONObject getAccessList(GetAccessListRequest getAccessListRequest) throws FileItException, IOException, ParseException  {
+		JSONObject accessListObj=null;
+		ACLUtil aclUtil=new ACLUtil();
+		accessListObj = aclUtil.getAccessList(getAccessListRequest.getRole());
+		return accessListObj;
 	}
 }
