@@ -1,18 +1,17 @@
 package com.tranfode.service;
 
 import java.io.IOException;
+import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.container.ContainerRequestContext;
 import javax.ws.rs.container.ContainerRequestFilter;
 import javax.ws.rs.core.Context;
-import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.ext.Provider;
 
 import com.tranfode.Constants.ErrorCodeConstants;
-import com.tranfode.domain.AbstractRequest;
 import com.tranfode.domain.AuthorizationDetails;
 import com.tranfode.util.FileItException;
 import com.tranfode.util.UserUtil;
@@ -26,7 +25,11 @@ public class ACLFilter implements ContainerRequestFilter{
 	@Override
 	public void filter(ContainerRequestContext requestContext) throws IOException {
 		
-		String userName=requestContext.getHeaderString("UserName");
+		String userName=null;
+		if(null!=requestContext.getHeaders().get("UserName") && !requestContext.getHeaders().get("UserName").isEmpty()) {
+			
+			userName=requestContext.getHeaders().get("UserName").get(0);/*getHeaderString("UserName");*/
+		}
 	
 	//	AbstractRequest abstractRequest=(AbstractRequest) request;
 		//String userName=abstractRequest.getCustomHeader().getUserName();

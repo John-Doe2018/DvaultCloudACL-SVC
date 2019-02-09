@@ -1,8 +1,5 @@
 package com.tranfode.util;
 
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
 import com.tranfode.Constants.BinderConstants;
 
 public class FormatterUtil {
@@ -13,6 +10,23 @@ public class FormatterUtil {
 	}
 	
 	public String undoFormat(String input, String key) {
+		String bookName=null;
+		String defaultKey="G000";
+		String[] arr=input.split("#");
+		if(defaultKey.equals(key)) {
+			bookName=arr[0];
+		}else if(null!=key && arr.length>2) {
+			if(key.equals(arr[2]) || defaultKey.equals(arr[2])) {
+				bookName=arr[0];
+			}
+		}
+
+		return bookName;
+	}
+	
+	
+	
+	/*public String undoFormat(String input, String key) {
 		String  regex="(.)(#"+BinderConstants.TRANFODE_KEY+"#)";
 		if(null!=key) {
 			regex=regex+"("+key+")\\z";
@@ -28,5 +42,6 @@ public class FormatterUtil {
 		} else {
 			return null;
 		} 
-	}
+	}*/
+	
 }
