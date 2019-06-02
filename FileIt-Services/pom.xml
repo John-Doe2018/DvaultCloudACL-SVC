@@ -1,13 +1,14 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-	<groupId>FileIt-Services</groupId>
-	<artifactId>FileIt-Services</artifactId>
+	<groupId>DVault-Services</groupId>
+	<artifactId>DVault-Services</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<packaging>war</packaging>
+	<name>DVault-Services</name>
 	<!-- Properties(storing version in variable) -->
 	<properties>
-		<java.version>1.8</java.version>
+		<!-- <java.version>1.8</java.version> -->
 		<cxf.version>3.1.7</cxf.version>
 		<jackson.version>1.9.13</jackson.version>
 		<spring.version>4.1.4.RELEASE</spring.version>
@@ -240,7 +241,7 @@
 
 	</dependencies>
 	<build>
-		<finalName>FileIt-Services</finalName>
+		<finalName>DVault-Services</finalName>
 		<sourceDirectory>src</sourceDirectory>
 		<plugins>
 			<plugin>
