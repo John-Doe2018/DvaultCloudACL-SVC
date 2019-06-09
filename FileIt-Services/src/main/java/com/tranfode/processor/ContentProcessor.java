@@ -174,17 +174,25 @@ public class ContentProcessor {
 		float scale = 1.5f;
 		float rotation = 0f;
 		String encodedString = "";
-		BufferedImage image = (BufferedImage) icebergDocument.getPageImage(range - 1, GraphicsRenderingHints.PRINT,
-				Page.BOUNDARY_CROPBOX, rotation, scale);
+		BufferedImage image;
+		try {
+			image = (BufferedImage) icebergDocument.getPageImage(range - 1, GraphicsRenderingHints.PRINT,
+					Page.BOUNDARY_CROPBOX, rotation, scale);
+		
 		RenderedImage rendImage = image;
 		ByteArrayOutputStream os = new ByteArrayOutputStream();
-		try {
+		
 			ImageIO.write(rendImage, "jpeg", os);
 			byte[] bytes = os.toByteArray();
 			encodedString = Base64.encode(bytes);
 			os.close();
 		} catch (IOException e) {
 			e.printStackTrace();
+			return encodedString;
+		}
+		catch (InterruptedException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
 			return encodedString;
 		}
 		image.flush();

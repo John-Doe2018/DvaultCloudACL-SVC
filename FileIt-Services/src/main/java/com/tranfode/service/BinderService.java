@@ -530,8 +530,8 @@ public class BinderService {
 			JSONArray finalJsonArray = new JSONArray();
 
 			try {
-				JSONArray jsonArray = (JSONArray) obj;
-				for (Object object : jsonArray) {
+				List<Object> objList =  (List<Object>) obj;
+				for (Object object : objList) {
 					String value = formatterUtil.undoFormat((String) object, groupId);
 					if (null != value) {
 						finalJsonArray.add(value);

@@ -1,4 +1,5 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>DVault-Services</groupId>
@@ -60,8 +61,8 @@
 					<artifactId>bcprov-jdk14</artifactId>
 				</exclusion>
 				<exclusion>
-					 <groupId>bouncycastle</groupId>
-   					 <artifactId>bcmail-jdk14</artifactId>
+					<groupId>bouncycastle</groupId>
+					<artifactId>bcmail-jdk14</artifactId>
 				</exclusion>
 			</exclusions>
 		</dependency>
@@ -201,7 +202,7 @@
 		<dependency>
 			<groupId>org.icepdf.os</groupId>
 			<artifactId>icepdf-core</artifactId>
-			<version>6.1.2</version>
+			<version>6.2.2</version>
 			<exclusions>
 				<exclusion>
 					<groupId>org.bouncycastle</groupId>
@@ -222,7 +223,7 @@
 		<dependency>
 			<groupId>org.icepdf.os</groupId>
 			<artifactId>icepdf-viewer</artifactId>
-			<version>6.1.2</version>
+			<version>6.2.2</version>
 			<exclusions>
 				<exclusion>
 					<groupId>org.bouncycastle</groupId>
@@ -237,6 +238,35 @@
 					<artifactId>bcprov-ext-jdk15on</artifactId>
 				</exclusion>
 			</exclusions>
+		</dependency>
+		<!-- https://mvnrepository.com/artifact/javax.media/jai_core -->
+		<dependency>
+			<groupId>javax.media</groupId>
+			<artifactId>jai_core</artifactId>
+			<version>1.1.3</version>
+		</dependency>
+
+
+		<!-- Added for openjdk 11 -->
+		<dependency>
+			<groupId>javax.annotation</groupId>
+			<artifactId>javax.annotation-api</artifactId>
+			<version>1.3.2</version>
+		</dependency>
+		<dependency>
+			<groupId>javax.xml.bind</groupId>
+			<artifactId>jaxb-api</artifactId>
+			<version>2.4.0-b180725.0427</version>
+		</dependency>
+		<dependency>
+			<groupId>org.glassfish.jaxb</groupId>
+			<artifactId>jaxb-runtime</artifactId>
+			<version>2.4.0-b180725.0644</version>
+		</dependency>
+		<dependency>
+			<groupId>com.sun.activation</groupId>
+			<artifactId>javax.activation</artifactId>
+			<version>1.2.0</version>
 		</dependency>
 
 	</dependencies>
